@@ -36,8 +36,8 @@ def badge_score(backpack_list: list) -> int:
     """
     Finds the char that is present in all three backpacks and returns its priority
     """
-    for char in string.ascii_letters:
-        if all([char in backpack for backpack in backpack_list]):
+    for char in backpack_list[0]:
+        if all([char in backpack for backpack in backpack_list[1:]]):
             return get_char_priority(char)
     else:
          raise(Exception('WTF: no badge found in group: "{}"'.format(backpack_list)))
@@ -45,13 +45,12 @@ def badge_score(backpack_list: list) -> int:
 
 if __name__ == '__main__':
     """Executed if file is executed but not if file is imported."""
-    full_text = open('input.txt').read()
-    text_lines = full_text.split('\n')
+    text_lines = open('input.txt').read().split('\n')
     
-    sum_line_scores = sum([line_score(line) for line in text_lines])
-    print('Part 1 - Total score according to input: {}'.format(sum_line_scores))
+    sum_lines = sum([line_score(line) for line in text_lines])
+    print('Part 1 - Total score according to input: {}'.format(sum_lines))
     
-    sum_badge_scores = sum([badge_score(text_lines[idx * 3:(idx + 1) * 3]) \
-        for idx in range(len(text_lines) // 3)])
-    print('Part 2 - Total score according to input: {}'.format(sum_badge_scores))
+    sum_badges = sum([badge_score(text_lines[idx:idx + 3]) for idx in range(0, len(text_lines), 3)])
+    print('Part 2 - Total score according to input: {}'.format(sum_badges))
+    
    
