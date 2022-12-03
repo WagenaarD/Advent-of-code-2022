@@ -10,11 +10,9 @@ import string
 
 def get_char_priority(char: str) -> int:
     """
-    To help prioritize item rearrangement, every item type can be converted to a priority:
+    Every item type can be converted to a priority:
      - Lowercase item types a through z have priorities 1 through 26.
      - Uppercase item types A through Z have priorities 27 through 52.
-    In the above example, the priority of the item type that appears in both compartments of each 
-    rucksack is 16 (p), 38 (L), 42 (P), 22 (v), 20 (t), and 19 (s); the sum of these is 157.
     """
     return string.ascii_letters.find(char) + 1 
 
