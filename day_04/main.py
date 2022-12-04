@@ -40,8 +40,8 @@ import re
 
 # Minimalistic approach
 input_lines = open('input.txt').read().split('\n')
-num_list = [[int(match) for match in re.findall('[0-9]+', line)] for line in input_lines]
+# num_list = [[int(match) for match in re.findall('[0-9]+', line)] for line in input_lines]
+num_list = [map(int, re.findall('[0-9]+', line)) for line in input_lines] # Suggestion LiquidFun
 set_list = [(set(range(num[0], num[1] + 1)), set(range(num[2], num[3] + 1))) for num in num_list]
 print('Part 1:', [pair[0] >= pair[1] or pair[0] <= pair[1] for pair in set_list].count(True))
 print('Part 2:', [bool(pair[0] & pair[1]) for pair in set_list].count(True))
-    
