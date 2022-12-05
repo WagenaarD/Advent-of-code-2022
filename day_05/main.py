@@ -1,8 +1,13 @@
 """
 Advent of code challenge 2022
-Start:  12:27
-Part 1: 12:56 - QPJPLMNNR
-Part 2: 12:58 - BQDNWJPVJ
+
+Chose to not use error catching, input asserts and functions today.
+
+Start:   12:27
+Part 1:  12:56 - QPJPLMNNR
+Part 2:  12:58 - BQDNWJPVJ
+Cleanup: 13:08
+
 """
 
 __project__   = 'Advent of code 2022'
