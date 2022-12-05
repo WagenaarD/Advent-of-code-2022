@@ -1,7 +1,8 @@
 """
 Advent of code challenge 2022
 Start 12:27
-Part 1: 12:56
+Part 1: 12:56 - QPJPLMNNR
+Part 2: 12:58 - BQDNWJPVJ
 """
 
 __project__   = 'Advent of code 2022'
@@ -22,7 +23,8 @@ for move in moves_input.split('\n'):
     (num_to_move, from_stack, to_stack) = [int(num) for num in move.split() if num.isdigit()]
     
     print(num_to_move, from_stack, to_stack)
-    warehouse[to_stack - 1] = list(reversed(warehouse[from_stack - 1][:num_to_move])) + warehouse[to_stack - 1]
+    # warehouse[to_stack - 1] = list(reversed(warehouse[from_stack - 1][:num_to_move])) + warehouse[to_stack - 1]
+    warehouse[to_stack - 1] = warehouse[from_stack - 1][:num_to_move] + warehouse[to_stack - 1]
     print(warehouse)
     del warehouse[from_stack - 1][:num_to_move]
     print(warehouse)
