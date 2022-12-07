@@ -75,9 +75,20 @@ if __name__ == '__main__':
     base_folder = process_input(open('input.txt').read().split('\n'))
     # base_folder = process_input(open('test_input.txt').read().split('\n'))
     print(base_folder)
-    print(base_folder.get_dirs())
+    all_dirs = base_folder.get_dirs()
 
     # Part 1: Find all of the directories with a total size of at most 100000. What is the sum of 
     # the total sizes of those directories?
-    print('\n'.join([repr(dir) for dir in base_folder.get_dirs() if dir.size <= 100000]))
-    print('Part 1 result: {}'.format(sum([dir.size for dir in base_folder.get_dirs() if dir.size <= 100000])))
+    print('\n'.join([repr(dir) for dir in all_dirs if dir.size <= 100000]))
+    print('Part 1:', sum([dir.size for dir in all_dirs if dir.size <= 100000]))
+
+    # Part 2: Find the smallest directory that, if deleted, would free up enough space on the 
+    # filesystem to run the update. What is the total size of that directory?
+    # The total disk space available to the filesystem is 70000000. To run the update, you need 
+    # unused space of at least 30000000. You need to find a directory you can delete that will free 
+    # up enough space to run the update.
+    required_space = 30000000 - (70000000 - base_folder.size)
+    print('Part 2:', min([item.size for item in all_dirs if item.size >= required_space]))
+    
+
+
