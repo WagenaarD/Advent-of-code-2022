@@ -26,12 +26,7 @@ def get_visibility(row, col, height):
 
 def get_scenic_score(row, col, height):
     score = 1
-    for trees in (
-        height[row][:col][::-1],
-        height[row][col+1:],
-        [x[col] for x in height[:row]][::-1],
-        [x[col] for x in height[row+1:]],
-    ):
+    for trees in get_tree_lines(row, col, height):
         for idx in range(len(trees)):
             if trees[idx] >= height[row][col]:
                 score *= (idx + 1)
@@ -41,44 +36,18 @@ def get_scenic_score(row, col, height):
     return score
 
 
-
 tree_height = [[int(char) for char in line] for line in input_lines]
-# visible_trees = [[False for _ in range(len(input_lines))] for __ in range(len(input_lines[0]))]
 
-# for row in range(len(tree_height)):
-#     min_height = -1
-#     for col in range(len(tree_height[row])):
-#         if tree_height[row][col] > min_height:
-#             visible_trees[row][col] = True
-#             min_height = tree_height[row][col]
-#     min_height = -1
-#     for col in range(len(tree_height[row]))[::-1]:
-#         if tree_height[row][col] > min_height:
-#             visible_trees[row][col] = True
-#             min_height = tree_height[row][col]
-# for col in range(len(tree_height[0])):
-#     min_height = -1
-#     for row in range(len(tree_height)):
-#         if tree_height[row][col] > min_height:
-#             visible_trees[row][col] = True
-#             min_height = tree_height[row][col]
-#     min_height = -1
-#     for row in range(len(tree_height))[::-1]:
-#         if tree_height[row][col] > min_height:
-#             visible_trees[row][col] = True
-#             min_height = tree_height[row][col]
-
-visible_trees = [get_visibility(row, col, tree_height) for row in range(len(tree_height)) for col in range(len(tree_height[0]))]
-
+no_visible_trees = 0
+for row in range(len(tree_height)):
+    for col in range(len(tree_height[0])):
+        if get_visibility(row, col, tree_height):
+            no_visible_trees += 1
 
 max_scenic_score = 0
 for row in range(len(tree_height)):
     for col in range(len(tree_height[row])):
         max_scenic_score = max(max_scenic_score, get_scenic_score(row, col, tree_height))
 
-# Visualize our result
-# print('\n'.join([''.join(['■' if vis else '.' for vis in line]) for line in visible_trees]))
-
-# print('Part 1:', sum([row.count(True) for row in visible_trees]))
-print('Part 1:', sum(visible_trees))
+print('Part 1:', no_visible_trees)
 print('Part 2:', max_scenic_score)
