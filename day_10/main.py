@@ -17,15 +17,5 @@ for line in sys.stdin.read().strip().split('\n'):
     x_list.append(x_current)
 print('Part 1:', sum([c * x_list[c - 1] for c in (20, 60, 100, 140, 180, 220)]))
 
-# output = ''.join(['#' if c % 40 + 1 in [x, x+1, x+2] else '.' for c,x in enumerate(x_list[:240])])
-# print('Part 2:\n' + '\n'.join([output[i:i+40] for i in range(0, 240, 40)]))
-
-output = ''
-for cycle, x in enumerate(x_list[:240]):
-    if cycle % 40 + 1 in [x, x+1, x+2]:
-        output += '#'
-    else:
-        output += '.'
-    if (cycle + 1) % 40 == 0:
-        output += '\n'
-print('Part 2:\n' + output[:-1])
+output = ''.join(['#' if c % 40 + 1 in [x, x+1, x+2] else '.' for c,x in enumerate(x_list[:240])])
+print('Part 2:\n' + '\n'.join([output[i:i+40] for i in range(0, 240, 40)]))
