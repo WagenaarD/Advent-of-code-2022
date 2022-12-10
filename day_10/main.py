@@ -2,44 +2,30 @@
 Advent of code challenge 2022
 >> python3 main.py < in
 Start   - 09:56
-Part 1  - 09:12
-Part 2  - 09:23
+Part 1  - 09:12 - 12980
+Part 2  - 09:23 - BRJLFULP
 Cleanup - 
 """
 
 import sys
-import itertools as it
-from dataclasses import dataclass, field
-from collections import defaultdict
-import re
-import pprint
 
+x_current, x_list = 1, [1]
+for line in sys.stdin.read().strip().split('\n'):
+    if line != 'noop':
+        x_list.append(x_current)
+        x_current += int(line.split()[1])
+    x_list.append(x_current)
+print('Part 1:', sum([c * x_list[c - 1] for c in (20, 60, 100, 140, 180, 220)]))
 
-input = sys.stdin.read().strip().split('\n')
-
-x, cycle = 1, 1
-x_values = {cycle: x}
-for line in input:
-    if line == 'noop':
-        cycle += 1
-    else:
-        amount = int(line.split()[1])
-        x_values[cycle+1] = x
-        cycle += 2
-        x += amount
-    x_values[cycle] = x
-print('Part 1:', sum([c * x_values[c] for c in (20, 60, 100, 140, 180, 220)]))
+# output = ''.join(['#' if c % 40 + 1 in [x, x+1, x+2] else '.' for c,x in enumerate(x_list[:240])])
+# print('Part 2:\n' + '\n'.join([output[i:i+40] for i in range(0, 240, 40)]))
 
 output = ''
-for cycle, x in x_values.items():
-    if (cycle - 1) % 40 + 1 in [x, x+1, x+2]:
+for cycle, x in enumerate(x_list[:240]):
+    if cycle % 40 + 1 in [x, x+1, x+2]:
         output += '#'
     else:
         output += '.'
-    if cycle >= 240:
-        break
-    elif cycle % 40 == 0:
+    if (cycle + 1) % 40 == 0:
         output += '\n'
-print('Part 2:\n' + output)
-
-
+print('Part 2:\n' + output[:-1])
