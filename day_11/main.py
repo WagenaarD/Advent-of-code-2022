@@ -20,7 +20,7 @@ def simulate_monkey_throws(monkeys, no_rounds = 20, divide = 3):
             for item in monkey['items']:
                 monkey['inspected'] += 1
                 item = eval(monkey['operation'].replace('old', 'item'))
-                item = item % test_product
+                item %= test_product
                 item //= divide
                 target = monkey['targets'][item % monkey['test'] == 0]
                 monkeys[target]['items'].append(item)
