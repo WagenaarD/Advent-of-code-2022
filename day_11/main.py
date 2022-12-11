@@ -2,78 +2,62 @@
 Advent of code challenge 2022
 >> python3 main.py < in
 Start   - 11:39
-Part 1  - 12:06
-Part 2  - 12:13
+Part 1  - 12:06 - 57838
+Part 2  - 12:13 - 15077002392
 Cleanup - 
 """
 
 import sys
-import itertools as it
-from dataclasses import dataclass, field
-from collections import defaultdict
 import re
+import numpy
 from pprint import pprint
 
 
-input_lines = sys.stdin.read().strip().split('\n')
+def simulate_monkey_throws(monkeys, test_product = 1, no_rounds = 20, divide = True, log_print = False):
+    log = lambda x: print(x) if log_print else None
+    for round in range(no_rounds):
+        for idx, monkey in enumerate(monkeys):
+            log('Monkey {}:'.format(idx))
+            for item in monkey['items']:
+                log('  Monkey inspects an item with a worry level of {}.'.format(item))
+                monkey['inspected'] += 1
+                item = eval(monkey['operation'].replace('old', 'item'))
+                item = item % test_product
+                log('    Worry level is changed ({}) to {}.'.format(monkey['operation'], item))
+                if divide:
+                    item //= 3
+                log('    Monkey gets bored with item. Worry level is divided by 3 to {}.'.format(item))
+                target = monkey['true_target'] if item % monkey['test'] == 0 else monkey['false_target']
+                monkeys[target]['items'].append(item)
+                log('    Item with worry level {} is thrown to monkey {}.'.format(item, target))
+            monkey['items'] = []
+        log('After round {}, the monkeys are holding items with these worry levels:'.format(round))
+        for idx, monkey in enumerate(monkeys):
+            log('Monkey {}: {}'.format(idx, ', '.join([str(item) for item in monkey['items']])))
+    return monkeys
 
-for line in input_lines:
-    print(line)
+if __name__ == '__main__':
+    """Executed if file is executed but not if file is imported."""
+    monkeys = [{
+        'inspected': 0,
+        'items': list(map(int, re.findall('[0-9]+', line_set[1]))),
+        'operation': line_set[2][19:],
+        'test': int(re.findall('[0-9]+', line_set[3])[0]),
+        'true_target': int(re.findall('[0-9]+', line_set[4])[0]),
+        'false_target': int(re.findall('[0-9]+', line_set[5])[0]),
+    } for line_set in [lines.split('\n') for lines in sys.stdin.read().strip().split('\n\n')]]
+    # pprint(monkeys)
 
+    test_product = numpy.prod([monkey['test'] for monkey in monkeys])
+    print('test_product =', test_product)
 
+    monkeys_p1 = simulate_monkey_throws(monkeys, test_product, 20, True)
+    inspected_counts = [monkey['inspected'] for monkey in monkeys_p1]
+    print('Part 1:', max(inspected_counts) * sorted(inspected_counts)[-2])
 
+    monkeys_p2 = simulate_monkey_throws(monkeys, test_product, int(1E4), False)
+    inspected_counts = [monkey['inspected'] for monkey in monkeys_p2]
+    print('Part 2:', max(inspected_counts) * sorted(inspected_counts)[-2])
 
-monkeys = []
-for line in input_lines:
-    if line.startswith('Monkey'):
-        new_monkey = {'inspected': 0}
-    elif line.startswith('  Starting items'):
-        new_monkey['items'] = list(map(int, re.findall('[0-9]+', line)))
-    elif line.startswith('  Operation'):
-        new_monkey['operation'] = line[19:]
-    elif line.startswith('  Test'):
-        new_monkey['test'] = int(re.findall('[0-9]+', line)[0])
-    elif line.startswith('    If true'):
-        new_monkey['true_target'] = int(re.findall('[0-9]+', line)[0])
-    elif line.startswith('    If false'):
-        new_monkey['false_target'] = int(re.findall('[0-9]+', line)[0])
-        monkeys.append(new_monkey)
-print('\nMonkeys:')
-pprint(monkeys)
-
-
-def report_status(monkeys, round):
-    print('After round {}, the monkeys are holding items with these worry levels:'.format(round))
-    for idx, monkey in enumerate(monkeys):
-        print('Monkey {}: {}'.format(idx, ', '.join([str(item) for item in monkey['items']])))
-    
-largest_divider = 1
-for monkey in monkeys:
-    largest_divider *= monkey['test']
-print('largest_divider', largest_divider)
-
-
-report_status(monkeys, 0)
-for round in range(10000):
-    for idx, monkey in enumerate(monkeys):
-        # print('Monkey {}:'.format(idx))
-        for item in monkey['items']:
-            # print('  Monkey inspects an item with a worry level of {}.'.format(item))
-            monkey['inspected'] += 1
-            item = eval(monkey['operation'].replace('old', 'item'))
-            item = item % largest_divider
-            # print('    Worry level is changed ({}) to {}.'.format(monkey['operation'], item))
-            # item //= 3
-            # print('    Monkey gets bored with item. Worry level is divided by 3 to {}.'.format(item))
-            target = monkey['true_target'] if item % monkey['test'] == 0 else monkey['false_target']
-            monkeys[target]['items'].append(item)
-            # print('    Item with worry level {} is thrown to monkey {}.'.format(item, target))
-        monkey['items'] = []
-    if round == 0 or round == 19 or (round + 1) % 1000 == 0:
-        report_status(monkeys, round+1)
-
-inspected_counts = [monkey['inspected'] for monkey in monkeys]
-print(inspected_counts)
-print('Part 1:', max(inspected_counts) * sorted(inspected_counts)[-2])
 
 
