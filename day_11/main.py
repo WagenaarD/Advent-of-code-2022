@@ -3,7 +3,7 @@ Advent of code challenge 2022
 >> python3 main.py < in
 Start   - 11:39
 Part 1  - 12:06
-Part 2  - 
+Part 2  - 12:13
 Cleanup - 
 """
 
@@ -47,23 +47,30 @@ def report_status(monkeys, round):
     for idx, monkey in enumerate(monkeys):
         print('Monkey {}: {}'.format(idx, ', '.join([str(item) for item in monkey['items']])))
     
+largest_divider = 1
+for monkey in monkeys:
+    largest_divider *= monkey['test']
+print('largest_divider', largest_divider)
+
 
 report_status(monkeys, 0)
-for round in range(20):
+for round in range(10000):
     for idx, monkey in enumerate(monkeys):
         # print('Monkey {}:'.format(idx))
         for item in monkey['items']:
             # print('  Monkey inspects an item with a worry level of {}.'.format(item))
             monkey['inspected'] += 1
             item = eval(monkey['operation'].replace('old', 'item'))
+            item = item % largest_divider
             # print('    Worry level is changed ({}) to {}.'.format(monkey['operation'], item))
-            item //= 3
+            # item //= 3
             # print('    Monkey gets bored with item. Worry level is divided by 3 to {}.'.format(item))
             target = monkey['true_target'] if item % monkey['test'] == 0 else monkey['false_target']
             monkeys[target]['items'].append(item)
             # print('    Item with worry level {} is thrown to monkey {}.'.format(item, target))
         monkey['items'] = []
-    report_status(monkeys, round+1)
+    if round == 0 or round == 19 or (round + 1) % 1000 == 0:
+        report_status(monkeys, round+1)
 
 inspected_counts = [monkey['inspected'] for monkey in monkeys]
 print(inspected_counts)
