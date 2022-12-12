@@ -27,6 +27,7 @@ def find_steps_between_points(start_positions, end_pos, lines):
         steps += 1
     return steps
 
+
 if __name__ == '__main__':
     """Executed if file is executed but not if file is imported."""
 
