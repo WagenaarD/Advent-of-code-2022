@@ -10,7 +10,7 @@ Cleanup - Forgot
 import sys
 
 
-def find_steps_between_points(start_positions, end_pos, lines):
+def find_steps_between_points(start_positions: list, end_pos: tuple, lines: list) -> int:
     steps = 0
     visited = start_positions
     stack = start_positions[:]
@@ -27,20 +27,18 @@ def find_steps_between_points(start_positions, end_pos, lines):
         steps += 1
     return steps
 
+def find_positions(char: str, lines: list) -> list:
+    return [(r, c) for r in range(len(lines)) for c in range(len(lines[0])) if lines[r][c] == char]
 
 if __name__ == '__main__':
     """Executed if file is executed but not if file is imported."""
 
     lines = sys.stdin.read().strip().split('\n')
 
-    for row, line in enumerate(lines):
-        if 'S' in line:
-            start_pos = (row, line.index('S'))
-        if 'E' in line:
-            end_pos = (row, line.index('E'))
-        lines[row] = lines[row].replace('E', 'z').replace('S', 's')
+    start_pos = find_positions('S', lines)[0]
+    end_pos = find_positions('E', lines)[0]
+    a_positions = find_positions('a', lines)
+    lines = [line.replace('E', 'z').replace('S', 'a') for line in lines]
 
     print('Part 1:', find_steps_between_points([start_pos], end_pos, lines))
-    a_positions = [(row, col) for row in range(len(lines)) for col in range(len(lines[0])) \
-        if lines[row][col] == 'a']
     print('Part 2:', find_steps_between_points(a_positions, end_pos, lines))
