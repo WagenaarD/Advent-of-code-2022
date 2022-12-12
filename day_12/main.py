@@ -8,12 +8,6 @@ Cleanup - Forgot
 """
 
 import sys
-import itertools as it
-from dataclasses import dataclass, field
-from collections import defaultdict
-import re
-import numpy as np
-from pprint import pprint
 
 
 def find_steps_between_points(start_positions, end_pos, lines):
