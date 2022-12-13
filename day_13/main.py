@@ -52,7 +52,6 @@ def correct_order(left, right) -> bool:
     elif type(left) == type(right) == int:
         return min(1, max(-1, right - left))
 
-    
 
 if __name__ == '__main__':
     """Executed if file is executed but not if file is imported."""
