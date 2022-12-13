@@ -4,7 +4,7 @@ Advent of code challenge 2022
 Start   - Forgot
 Part 1  - Forgot - 6272
 Part 2  - Forgot - 22288
-Cleanup - 
+Cleanup - 19:09
 """
 
 import sys
@@ -59,8 +59,8 @@ if __name__ == '__main__':
     input = sys.stdin.read().strip()
     
     pairs = [[json.loads(line) for line in pair.split('\n')] for pair in input.split('\n\n')]
-    print('Part 1:', sum([idx+1 for idx, pair in enumerate(pairs) if correct_order(*pair) == 1]))
+    print('Part 1:', sum([idx + 1 for idx, pair in enumerate(pairs) if correct_order(*pair) == 1]))
 
-    lines = [json.loads(line) for line in input.replace('\n\n', '\n').split('\n')]+ [[[2]], [[6]]]
+    lines = [json.loads(line) for line in input.replace('\n\n', '\n').split('\n')] + [[[2]], [[6]]]
     lines.sort(key = cmp_to_key(correct_order), reverse = True)
     print('Part 2:', (lines.index([[2]]) + 1) * (lines.index([[6]]) + 1))
