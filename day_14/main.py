@@ -10,6 +10,11 @@ Not a very fast implementation. Keeping a set and storing all positions is faste
 slower for part 2 compared to keeping track of a grid and all items in it (how Tamara did it). Code
 had to be optimized as it would initially take too long (minutes to reach 10.000 and slowing down 
 each iteration). Current version was 0.07s for part 1, and 50s for part 2.
+
+Update: I was dumb and it could be done much faster. My approach was fine but I joined sets ~100.000
+times unncessarily. When this was fixed the previous optimization was no longer required. I removed
+and the code is now similar to how it was for part 1. Current version takes 0.01s and 0.59s for 
+parts 1 and 2 respectively.
 """
 
 import sys
@@ -42,50 +47,38 @@ def visualize_grid(rocks: set, sand: set = set()) -> None:
         print(output)
 
 
-def find_next_sand_position(rocks: set, sand: set, floor: bool = False) -> tuple:
-    old_path: list = find_next_sand_position.last_path
-    for _ in range(len(old_path)):
-        x, y = old_path.pop()
-        path = old_path[:]
-        while True:
-            path.append((x, y))
-            if (x, y) in sand | rocks:
-                visualize_grid(rocks, sand)
-                raise(Exception('Can\'t place sand'))
-            elif y >= find_next_sand_position.y_max:
-                if floor:
-                    find_next_sand_position.last_path = path[:-1]
-                    return (x, y)
-                else:
-                    return None
-            elif not (x, y + 1) in (sand | rocks):
-                y += 1
-            elif not (x - 1, y + 1) in (sand | rocks):
-                x -= 1
-                y += 1
-            elif not (x + 1, y + 1) in (sand | rocks):
-                x += 1
-                y += 1
-            else:
-                find_next_sand_position.last_path = path[:-1]
+def find_next_sand_position(taken: set, y_max: int, floor: bool = False) -> tuple:
+    x, y = 500, 0
+    while True:
+        if (x, y) in taken:
+            return None
+        elif y >= y_max:
+            if floor:
                 return (x, y)
-find_next_sand_position.last_path = None
-find_next_sand_position.y_max = None
+            else:
+                return None
+        elif not (x, y + 1) in taken:
+            x, y = x, y + 1
+        elif not (x - 1, y + 1) in taken:
+            x, y = x - 1, y + 1
+        elif not (x + 1, y + 1) in taken:
+            x, y = x + 1, y + 1
+        else:
+            return (x, y)
 
 
-@print_function(prefix = ' - ', run_time = True)
+@print_function(run_time = True)
 def solve(rocks: set, y_max: int, floor: bool) -> int:
     find_next_sand_position.last_path = [(500, 0)]
-    find_next_sand_position.y_max = y_max
-    sand = set()
+    taken = rocks.copy()
     while True:
-        next_pos = find_next_sand_position(rocks, sand, floor)
+        next_pos = find_next_sand_position(taken, y_max, floor)
         if next_pos == None:
             break
-        sand.add(next_pos)
-    visualize_grid(rocks, sand)
+        taken.add(next_pos)
+    # visualize_grid(rocks, taken)
 
-    return len(sand)
+    return len(taken) - len(rocks)
 
 
 if __name__ == '__main__':
