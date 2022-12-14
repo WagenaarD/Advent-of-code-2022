@@ -9,7 +9,7 @@ Cleanup - 19:09
 
 import sys
 sys.path.insert(0, '/'.join(__file__.replace('\\\\', '/').split('/')[:-2]))
-from utils.print_function import print_function
+from _utils.print_function import print_function
 import json
 from functools import cmp_to_key
 
