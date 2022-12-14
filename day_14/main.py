@@ -71,7 +71,8 @@ def solve(rocks: set, y_max: int, floor: bool) -> int:
         if next_pos == None:
             break
         taken.add(next_pos)
-    # visualize_grid(rocks, taken)
+    if len(taken) < 2000:
+        visualize_grid(rocks, taken)
 
     return len(taken) - len(rocks)
 
