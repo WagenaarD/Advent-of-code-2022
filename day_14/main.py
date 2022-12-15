@@ -11,10 +11,10 @@ slower for part 2 compared to keeping track of a grid and all items in it (how T
 had to be optimized as it would initially take too long (minutes to reach 10.000 and slowing down 
 each iteration). Current version was 0.07s for part 1, and 50s for part 2.
 
-Update: I was dumb and it could be done much faster. My approach was fine but I joined sets ~100.000
-times unncessarily. When this was fixed the previous optimization was no longer required. I removed
-and the code is now similar to how it was for part 1. Current version takes 0.01s and 0.59s for 
-parts 1 and 2 respectively.
+Update: It could be done much faster. My approach was fine but I joined sets ~100.000 times 
+unncessarily. When this was fixed the previous optimization was no longer required. I removed it and
+the code is now similar to how it was for part 1. Current version takes 0.01s and 0.59s for parts 1 
+and 2 respectively.
 """
 
 import sys
