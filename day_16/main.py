@@ -2,8 +2,8 @@
 Advent of code challenge 2022
 >> python3 main.py < in
 Start   - 
-Part 1  - 
-Part 2  - 
+Part 1  - 1923 (ex 1651)
+Part 2  - (ex 1707)
 Cleanup - 
 """
 
@@ -18,7 +18,7 @@ import numpy as np
 from pprint import pprint
 
 # @print_function()
-def valve_path(source, target, d = 0):
+def valve_path(source: str, target: str, d: int = 0) -> list:
     """
     Returns a shortest path between the source and the target. 
 
@@ -51,6 +51,19 @@ def valve_path(source, target, d = 0):
                         return valve_path(source, valve, d+1)[:-1] + valve_path(valve, target, d+1)
     
 
+def valve_distance(source: str, target: str) -> int:
+    if not valve_distance.all_distances:
+        all_distances = {}
+        non_zero_valves = {key: value for key, value in valves.items() if value[0] > 0}
+        for key_1 in list(non_zero_valves.keys()) + ['AA']:
+            for key_2 in [key for key in non_zero_valves.keys() if key != key_1]:
+                all_distances[key_1 + key_2] = all_distances[key_2 + key_1] = \
+                    len(valve_path(key_1, key_2)) - 1
+        valve_distance.all_distances = all_distances
+    return valve_distance.all_distances[source + target]
+valve_distance.all_distances = None
+
+
 def get_all_paths(keys, path = ['AA'], t = 0, flow = 0, released = 0, tmax = 30):
     """
     Broad first algorithm. Calculates the release for every possible path between keys without 
@@ -59,7 +72,8 @@ def get_all_paths(keys, path = ['AA'], t = 0, flow = 0, released = 0, tmax = 30)
     paths = []
     for key in keys:
         if key not in path:
-            delta_t = len(valve_path(path[-1], key)) - 1 + 1
+            # delta_t = len(valve_path(path[-1], key)) - 1 + 1
+            delta_t = valve_distance(path[-1], key) + 1
             # if ', '.join(path + [key]) in 'AA, DD, BB, JJ, HH, EE, CC':
             #     # print('path: {} - t {}'.format(path + [key], t + delta_t))
             #     print('path: {}, t={}, f={}, r={}'.format(
@@ -78,18 +92,70 @@ def get_all_paths(keys, path = ['AA'], t = 0, flow = 0, released = 0, tmax = 30)
     return paths
 
 
-lines = sys.stdin.read().strip().split('\n')
+def get_all_duo_paths(keys, path = [['AA'], ['AA']], t = [0, 0], flow = [0, 0], released = [0, 0], tmax = 26):
+    """
+    Broad first algorithm. Calculates the release for every possible combination of two paths 
+    between keys without exceeding tmax.
+    """
+    # print(path)
+    paths = []
+    for key in keys:
+        for idx in range(2):
+            if key not in path[0] and key not in path[1]:
+                # delta_t = len(valve_path(path[idx][-1], key)) - 1 + 1
+                delta_t = valve_distance(path[idx][-1], key) + 1
+                if t[idx] + delta_t < tmax:
+                    
+                    paths += get_all_duo_paths(
+                        keys, 
+                        # path + [key], 
+                        [path[i] + ([key] if i == idx else []) for i in range(2)],
+                        # t + delta_t,
+                        [t[i] + (delta_t if i == idx else 0) for i in range(2)],
+                        # flow = flow + valves[key][0],
+                        [flow[i] + (valves[key][0] if i == idx else 0) for i in range(2)],
+                        # released = released + flow * delta_t,
+                        released = [released[i] + ((flow[i] * delta_t) if i == idx else 0) for i in range(2)],
+                    )
+    if not paths:
+        # paths = [(path, released + flow * (tmax - t))]
+        paths = [(path, sum([released[i] + flow[i] * (tmax - t[i]) for i in range(2)]))]
+    return paths
 
-# Process input
-valves = {}
-for line in lines:
-    valves[line[6:8]] = (
-        int(re.findall('[0-9]+', line)[0]),
-        line.replace(',', '').split()[9:],
-    )
+@print_function(run_time = True)
+def solve_part_1():
+    non_zero_valves = {key: value for key, value in valves.items() if value[0] > 0}
+    options = get_all_paths(list(non_zero_valves.keys()))
+    print('Part 1:', max([opt[1] for opt in options]))
+    return max([opt[1] for opt in options])
 
-# Part 1
-non_zero_valves = {key: value for key, value in valves.items() if value[0] > 0}
-pprint(non_zero_valves)
-options = get_all_paths(list(non_zero_valves.keys()))
-print('Part 1:', max([opt[1] for opt in options]))
+@print_function(run_time = True)
+def solve_part_2():
+    non_zero_valves = {key: value for key, value in valves.items() if value[0] > 0}
+    options = get_all_duo_paths(list(non_zero_valves.keys()))
+    print('Part 2:', max([opt[1] for opt in options]))
+    return max([opt[1] for opt in options])
+
+
+if __name__ == '__main__':
+    """Executed if file is executed but not if file is imported."""
+    
+    lines = sys.stdin.read().strip().split('\n')
+
+    # Process input
+    valves = {}
+    for line in lines:
+        valves[line[6:8]] = (
+            int(re.findall('[0-9]+', line)[0]),
+            line.replace(',', '').split()[9:],
+        )
+    non_zero_valves = {key: value for key, value in valves.items() if value[0] > 0}
+    print('None non_zero_valves (len = {}):'.format(len(non_zero_valves)))
+    pprint(non_zero_valves)
+
+    # Part 1
+    solve_part_1()
+    solve_part_2()
+
+
+
