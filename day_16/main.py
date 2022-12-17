@@ -76,9 +76,6 @@ def max_release(keys: list, node = 'AA', t = 0, duo = False, t_max = 30):
             t_max = t_max,
             )
         )
-    if t == 0:
-        if max(flow) >= 2585:
-            print('max(flow)', max(flow))
     max_release.cache[(''.join(keys), node, t, duo, t_max)] = max(flow)
     return max(flow)
 max_release.cache = {}
