@@ -4,17 +4,7 @@ Advent of code challenge 2022
 Start   - 
 Part 1  - 1923 (ex 1651)
 Part 2  - (ex 1707)
-depth
- 1: 2231
- 2: 2544 (guessed, too low. 7s)
- 3: 2585 (guessed, too low. Took 3:10 mm:ss)
- 3-4 (//3): 2585 (426s, implied worth adds 0.33)
- 4: 2585(5342s)
- 5:  
- 3-5 (//3): 
 Cleanup - 
-Guess 2600 is too high
-Range = 2585-2600
 """
 
 import sys
@@ -63,6 +53,8 @@ def valve_distance(source: str, target: str) -> int:
 
 
 def max_release(keys: list, node = 'AA', t = 0, duo = False, t_max = 30):
+    if (''.join(keys), node, t, duo, t_max) in max_release.cache:
+        return max_release.cache[(''.join(keys), node, t, duo, t_max)]
     flow = [0]
     for key_idx, key in enumerate(keys):
         delta_t = valve_distance(node, key) + 1
@@ -87,8 +79,9 @@ def max_release(keys: list, node = 'AA', t = 0, duo = False, t_max = 30):
     if t == 0:
         if max(flow) >= 2585:
             print('max(flow)', max(flow))
-
+    max_release.cache[(''.join(keys), node, t, duo, t_max)] = max(flow)
     return max(flow)
+max_release.cache = {}
 
 
 @print_function(run_time = True)
