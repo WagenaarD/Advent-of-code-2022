@@ -24,7 +24,7 @@ def arg_repr(argument):
         return '{:.50}'.format(repr(argument))
 
 
-def print_function(start = False, run_time = False, is_method = False, prefix = ''):
+def print_function(start = False, run_time = False, include_args = True, is_method = False, prefix = ''):
     """
     To be used as a decorator: e.g.
     @print_function(prefix = ' - ')
@@ -49,10 +49,13 @@ def print_function(start = False, run_time = False, is_method = False, prefix = 
                     function = function.__name__,
                 )
                 fun_args = args
-            output += '({arguments})'.format(arguments = ', '.join( \
-                [arg_repr(val) for val in fun_args] + \
-                ['{} = {}'.format(key, arg_repr(value)) for key, value in kwargs.items()]
-            ))
+            if include_args:
+                output += '({arguments})'.format(arguments = ', '.join( \
+                    [arg_repr(val) for val in fun_args] + \
+                    ['{} = {}'.format(key, arg_repr(value)) for key, value in kwargs.items()]
+                ))
+            else:
+                output += '(...)'
             if start:
                 print(output)
             start_time = datetime.datetime.now()
