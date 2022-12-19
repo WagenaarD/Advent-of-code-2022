@@ -20,22 +20,6 @@ from functools import cache
 import math
 
 
-# 12 - 0.0012
-# 13 - 0.0042
-# 14 - 0.016
-# 15 - 0.055
-# 16 - 0.48
-# 17 - 14
-# 18
-# 19
-# 20
-# 21
-# 22
-# 23
-# 24
-
-# LIMITS = (3, 5, 100, 100)
-
 @cache
 def dfs(blueprint, robot_cap, t = 24, robots = (1,0,0,0), resource = (0,0,0,0), order = ''):
     # We have three options and a non-option: Create one of three robots or wait out the time
