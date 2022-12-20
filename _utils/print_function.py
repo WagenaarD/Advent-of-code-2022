@@ -24,7 +24,7 @@ def arg_repr(argument):
         return '{:.50}'.format(repr(argument))
 
 
-def print_function(start = False, run_time = False, include_args = True, is_method = False, prefix = ''):
+def print_function(start = False, run_time = True, include_args = False, is_method = False, prefix = ''):
     """
     To be used as a decorator: e.g.
     @print_function(prefix = ' - ')
@@ -64,7 +64,7 @@ def print_function(start = False, run_time = False, include_args = True, is_meth
             seconds_passed = passed.days * 24 * 60 * 60 + passed.seconds + passed.microseconds / 1E6
             output += ' = {result}{time}'.format(
                 result = arg_repr(value),
-                time = '. ({} s)'.format(seconds_passed) if run_time else '',
+                time = ' ({} s)'.format(seconds_passed) if run_time else '',
             )
             print(output)
 

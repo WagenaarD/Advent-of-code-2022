@@ -2,61 +2,57 @@
 Advent of code challenge 2022
 >> python3 main.py < in
 Start   - 
-Part 1  - 9945
-Part 2  - 
+Part 1  - 9945 (ex 3)
+Part 2  - 3338877775442 (ex )
 Cleanup - 
 """
 
 import sys
 sys.path.insert(0, '/'.join(__file__.replace('\\', '/').split('/')[:-2]))
 from _utils.print_function import print_function
-import itertools as it
-from dataclasses import dataclass, field
-from collections import defaultdict
-import re
-import numpy as np
-from pprint import pprint
-from functools import cache
+
+KEY = 811_589_153
 
 
-lines = sys.stdin.read().strip().split('\n')
-
-if len(lines) < 10: print(list(map(int, lines)))
-
-input = list(enumerate(map(int, lines)))
-print('len(input) =', len(input))
-
-if len(lines) < 10: print('\nInitial arrangement')
-if len(lines) < 10: print(', '.join([str(num[1]) for num in input]))
-output = input[:]
-for idx, num in input[:]:
-    # print([out[1] for out in output])
-    # print(idx, num)
+def mix_list(input: list, key: int = 1, log: bool = False) -> list:
+    output = input[:]
+    key %= (len(output) - 1)
+    for idx, num in sorted(input):
+        pos = output.index((idx, num))
+        new_pos = (pos + num * key) % (len(output) - 1)
+        output.remove((idx, num))
+        output.insert(new_pos, (idx, num))
+    return output
     
-    # Find the index of the current item
-    pos = output.index((idx, num))
 
-    new_pos = (pos + num)
-    while new_pos < 0:
-        new_pos += (len(output) - 1)
-    while new_pos >= len(output):
-        new_pos -= (len(output) - 1)
-    output.remove((idx, num))
-    output.insert(new_pos, (idx, num))
-
-    if len(lines) < 10: print('\n{} moves between {} and {}:'.format(num, output[new_pos - 1][1], output[(new_pos + 1) % len(output)][1]))
-    if len(lines) < 10: print(', '.join([str(num[1]) for num in output]))
-
-numbers_output = [num[1] for num in output]
-pos_0 = numbers_output.index(0)
-print('pos_0 =', pos_0)
-values = []
-for idx in [1000, 2000, 3000]:
-    value = numbers_output[(pos_0 + idx) % len(numbers_output)]
-    values.append(value)
-    print(idx, value)
-print('Part 1:', sum(values))
+def get_coord_sum(input: list) -> int:
+    numbers_output = [num[1] for num in input]
+    pos_0 = numbers_output.index(0)
+    values = []
+    for idx in [1000, 2000, 3000]:
+        value = numbers_output[(pos_0 + idx) % len(numbers_output)]
+        values.append(value)
+    return sum(values)
 
 
+@print_function()
+def solve_1(input: list) -> int:
+    output = mix_list(input)
+    return get_coord_sum(output)
 
-    # break
+
+@print_function()
+def solve_2(input: list, log: bool = False) -> int:
+    for _ in range(10):
+        input = mix_list(input[:], KEY)
+    return get_coord_sum(input) * KEY
+
+
+if __name__ == '__main__':
+    """Executed if file is executed but not if file is imported."""
+
+    lines = sys.stdin.read().strip().split('\n')
+    input = list(enumerate(map(int, lines)))
+
+    solve_1(input)
+    solve_2(input)
