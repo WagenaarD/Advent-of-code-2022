@@ -48,7 +48,7 @@ monkey_val.input = dict()
 
 @print_function()
 def solve_1():
-    return monkey_val('root')
+    return int(monkey_val('root'))
 
 
 @print_function()
