@@ -89,7 +89,6 @@ def bfs(blizzards, start, end, width, height):
 if __name__ == '__main__':
     """Executed if file is executed but not if file is imported."""
     lines = sys.stdin.read().strip().split('\n')
-    # lines[row][col]
     # Blizzards in grid starting at [0][0]
     start = (-1, lines[0].index('.') - 1)
     end = (len(lines) - 2, lines[-1].index('.') - 1)
